@@ -1,0 +1,19 @@
+{
+	"repoName": "fpp-plugin-AudienceText",
+	"name": "Audience Text",
+	"author": "Stuart Ledingham (onlinedynamic)",
+	"description": "Lets anonymous guests on the FPP wifi tether put short text messages onto one matrix. Submissions are queued and shown strictly one at a time, so two people cannot fight over the display.",
+	"homeURL": "https://github.com/OnlineDynamic/fpp-plugin-AudienceText",
+	"srcURL": "https://github.com/OnlineDynamic/fpp-plugin-AudienceText.git",
+	"bugURL": "https://github.com/OnlineDynamic/fpp-plugin-AudienceText/issues",
+	"iconURL": "https://raw.githubusercontent.com/OnlineDynamic/fpp-plugin-AudienceText/master/icon.png",
+	"allowUpdates": 1,
+	"versions": [
+		{
+			"minFPPVersion": "8.0",
+			"maxFPPVersion": "0",
+			"branch": "master",
+			"sha": ""
+		}
+	]
+}

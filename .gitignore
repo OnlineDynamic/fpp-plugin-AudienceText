@@ -1,0 +1,8 @@
+# Runtime state. The queue is a log of messages that have already been on a
+# screen, and the pid/log files belong to whichever box is running the plugin.
+data/queue.db
+data/queue.db-shm
+data/queue.db-wal
+data/daemon.log
+data/daemon.log.*
+data/daemon.pid

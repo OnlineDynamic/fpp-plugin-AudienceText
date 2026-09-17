@@ -1,0 +1,222 @@
+{
+    "settingGroups": {
+        "AudienceTextTarget": {
+            "description": "Display Target",
+            "settings": [
+                "AudienceTextEnabled",
+                "AudienceTextModel",
+                "AudienceTextFont",
+                "AudienceTextFontSize",
+                "AudienceTextDirection",
+                "AudienceTextSpeed",
+                "AudienceTextGap"
+            ]
+        },
+        "AudienceTextLimits": {
+            "description": "Audience Limits",
+            "settings": [
+                "AudienceTextMaxLength",
+                "AudienceTextRateLimit",
+                "AudienceTextQueueMax",
+                "AudienceTextMaxShowSeconds"
+            ]
+        },
+        "AudienceTextPresentation": {
+            "description": "Audience Page",
+            "settings": [
+                "AudienceTextLogo",
+                "AudienceTextLogoHeight",
+                "AudienceTextHeading",
+                "AudienceTextBlurb",
+                "AudienceTextAllowColor",
+                "AudienceTextAllowStyles"
+            ]
+        }
+    },
+    "settings": {
+        "AudienceTextEnabled": {
+            "name": "AudienceTextEnabled",
+            "description": "Accept audience submissions",
+            "tip": "Master switch. When off the audience page still loads but politely refuses new messages, and the queue stops being drained. Use this to close submissions between sessions without taking the page down.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "checkbox",
+            "default": 1
+        },
+        "AudienceTextModel": {
+            "name": "AudienceTextModel",
+            "description": "Pixel Overlay Model",
+            "tip": "The one model every audience message is rendered onto. The audience never gets to choose this.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "select",
+            "optionsURL": "api/models?simple=true",
+            "optionCanBeBlank": 1,
+            "default": ""
+        },
+        "AudienceTextFont": {
+            "name": "AudienceTextFont",
+            "description": "Font",
+            "tip": "Font used to render the message.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "select",
+            "optionsURL": "api/overlays/fonts",
+            "default": "NimbusSans-Bold"
+        },
+        "AudienceTextFontSize": {
+            "name": "AudienceTextFontSize",
+            "description": "Font Size (px)",
+            "tip": "Point size passed to the Text overlay effect. Roughly the height of the text in pixels, so keep it comfortably under the model's height.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "number",
+            "min": 4,
+            "max": 400,
+            "default": 48
+        },
+        "AudienceTextSpeed": {
+            "name": "AudienceTextSpeed",
+            "description": "Scroll Speed (pixels/sec)",
+            "tip": "How fast the message scrolls right-to-left. This also sets how long each message occupies the queue, so it is the main lever on throughput.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "number",
+            "min": 1,
+            "max": 200,
+            "default": 40
+        },
+        "AudienceTextGap": {
+            "name": "AudienceTextGap",
+            "description": "Gap Between Messages (seconds)",
+            "tip": "Blank time after one message finishes before the next starts, so two messages never look like one run-on sentence.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "number",
+            "min": 0,
+            "max": 60,
+            "default": 2
+        },
+        "AudienceTextMaxLength": {
+            "name": "AudienceTextMaxLength",
+            "description": "Max Message Length (characters)",
+            "tip": "Anything longer is rejected at submit time. Long messages are not just unreadable, they hold the single-message queue open for everyone else.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "number",
+            "min": 1,
+            "max": 200,
+            "default": 60
+        },
+        "AudienceTextRateLimit": {
+            "name": "AudienceTextRateLimit",
+            "description": "Per-Device Cooldown (seconds)",
+            "tip": "Minimum gap between two accepted submissions from the same IP address, so one person cannot monopolise the matrix. 0 disables the cooldown.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "number",
+            "min": 0,
+            "max": 3600,
+            "default": 60
+        },
+        "AudienceTextQueueMax": {
+            "name": "AudienceTextQueueMax",
+            "description": "Max Queue Depth",
+            "tip": "Submissions are refused once this many messages are already waiting. Keeps the promised wait honest rather than letting a queue build up that will never be shown.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "number",
+            "min": 1,
+            "max": 500,
+            "default": 20
+        },
+        "AudienceTextMaxShowSeconds": {
+            "name": "AudienceTextMaxShowSeconds",
+            "description": "Message Watchdog (seconds)",
+            "tip": "Hard ceiling on one message. If the overlay effect has not reported itself finished by then the worker clears the model and moves on, so a wedged effect cannot stall the queue for the rest of the event.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "number",
+            "min": 5,
+            "max": 600,
+            "default": 90
+        },
+        "AudienceTextHeading": {
+            "name": "AudienceTextHeading",
+            "description": "Page Heading",
+            "tip": "Shown at the top of the audience page.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "text",
+            "size": 40,
+            "maxlength": "60",
+            "default": "Put your message on the big screen"
+        },
+        "AudienceTextBlurb": {
+            "name": "AudienceTextBlurb",
+            "description": "Page Subtitle",
+            "tip": "One line of explanation under the heading.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "text",
+            "size": 40,
+            "maxlength": "120",
+            "default": "Type something short. It'll scroll across the matrix when it's your turn."
+        },
+        "AudienceTextAllowColor": {
+            "name": "AudienceTextAllowColor",
+            "description": "Let the audience pick a colour",
+            "tip": "When off, every message is rendered white.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "checkbox",
+            "default": 1
+        },
+        "AudienceTextDirection": {
+            "name": "AudienceTextDirection",
+            "description": "Scroll Direction",
+            "tip": "Which way a message travels across the model. Only scrolling directions are offered: the queue advances when fppd reports the effect has finished, and a scroll is what finishes by itself. Long messages suit the horizontal directions - a vertical scroll renders the line at its full width, so anything wider than the model is clipped at the sides.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "select",
+            "options": {
+                "Right to Left": "Right to Left",
+                "Left to Right": "Left to Right",
+                "Bottom to Top": "Bottom to Top",
+                "Top to Bottom": "Top to Bottom"
+            },
+            "default": "Right to Left"
+        },
+        "AudienceTextAllowStyles": {
+            "name": "AudienceTextAllowStyles",
+            "description": "Offer multi-colour styles",
+            "tip": "Adds Rainbow, Fire, Ocean, Party and the rest to the audience's colour choices. Each one is a ready-made pairing of an fppd colour mode with a palette; the audience picks a swatch, not a mode. Turn it off to leave only the plain colours.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "checkbox",
+            "default": 1
+        },
+        "AudienceTextLogo": {
+            "name": "AudienceTextLogo",
+            "description": "Logo Image",
+            "tip": "Shown at the top of the audience page. Upload the image first through Content Setup > File Manager > Images, then pick it here. Leave blank for no logo - the audience page then simply starts at the heading rather than showing an empty box.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "select",
+            "optionsURL": "api/files/Images?nameOnly=1",
+            "optionCanBeBlank": 1,
+            "default": ""
+        },
+        "AudienceTextLogoHeight": {
+            "name": "AudienceTextLogoHeight",
+            "description": "Logo Max Height (px)",
+            "tip": "How much vertical room the logo gets at the top of the audience page. The image keeps its aspect ratio and is never drawn wider than the page, so a wide banner logo will be limited by the page width and come out shorter than this. Raise it if the logo looks lost on a phone.",
+            "restart": 0,
+            "reboot": 0,
+            "type": "number",
+            "min": 20,
+            "max": 500,
+            "default": 140
+        }
+    }
+}
