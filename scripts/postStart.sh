@@ -27,11 +27,22 @@ else
     RUN_AS=""
 fi
 
-# Echo the PIDs of every running instance of *this* plugin's worker. Matching on
-# the script path rather than the bare name keeps us from ever touching another
-# plugin's python process, or this shell.
+# Echo the PIDs of every running instance of *this* plugin's worker.
+#
+# Matching the script path keeps us off other plugins' python processes, but the
+# path alone is not enough: the sudo/setsid/bash wrappers used to launch it all
+# carry that same path on their own command lines, and the first match was the
+# sudo wrapper -- so the pid file recorded a process that is not the worker and
+# exits before it does. Confirming /proc/<pid>/comm is the interpreter itself
+# picks out the real one.
 running_pids() {
-    pgrep -f "python3? .*${DAEMON}" 2>/dev/null | grep -v "^$$\$"
+    local pid
+    for pid in $(pgrep -f "${DAEMON}" 2>/dev/null); do
+        [ "$pid" = "$$" ] && continue
+        case "$(cat /proc/$pid/comm 2>/dev/null)" in
+            python3*) echo "$pid" ;;
+        esac
+    done
 }
 
 PIDS=$(running_pids)
@@ -46,10 +57,17 @@ if [ -e "$PID_FILE" ]; then
     rm -f "$PID_FILE"
 fi
 
+# setsid, not just nohup. nohup only blocks SIGHUP; the worker still belongs to
+# whatever process group started it, so it was taken down with that group -- when
+# fppd_start was invoked from a script, and equally when someone runs this hook
+# by hand over SSH and then logs out. It would start, log its settings, and
+# vanish seconds later leaving submissions piling up in a queue nothing drained.
+# setsid puts it in its own session so it outlives the thing that launched it.
+#
 # The redirect has to happen inside the su'd shell, not out here: done by a
 # root shell it would recreate daemon.log root-owned, which is the same trap the
 # database fell into above.
-$RUN_AS nohup bash -c "exec python3 '$DAEMON' >> '$LOG_FILE' 2>&1" &
+$RUN_AS setsid nohup bash -c "exec python3 '$DAEMON' >> '$LOG_FILE' 2>&1" < /dev/null &
 DAEMON_PID=$!
 
 # $! is the wrapper (sudo/bash), not python3. Good enough to record, but confirm

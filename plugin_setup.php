@@ -66,6 +66,13 @@ $fontSize = at_setting_int('AudienceTextFontSize');
 $scrollSpeed = max(1, at_setting_int('AudienceTextSpeed'));
 $vertical = in_array(at_setting('AudienceTextDirection'), array('Bottom to Top', 'Top to Bottom'), true);
 $sizeWarning = ($geom !== null && $fontSize < $geom['h'] / 4);
+// The opposite failure, which only shows up on a short panel: the Text effect
+// renders the message at its natural size and clips whatever will not fit, so
+// on an 8-pixel-tall sign a font size of 20 silently loses the top and bottom
+// of every letter. Roughly, a font's cap height is ~0.7em and its full
+// ascender-to-descender span is about 1.2em, so anything much over the panel
+// height is already losing pixels.
+$tooBigWarning = ($geom !== null && $fontSize > $geom['h']);
 $crossSeconds = null;
 if ($geom !== null) {
     $sample = at_setting_int('AudienceTextMaxLength');
@@ -108,7 +115,7 @@ $slowWarning = ($crossSeconds !== null && $crossSeconds > 45);
   </div>
 <?php endif; ?>
 
-<?php if ($geom !== null && ($sizeWarning || $slowWarning)): ?>
+<?php if ($geom !== null && ($sizeWarning || $slowWarning || $tooBigWarning)): ?>
   <div class="callout callout-warning" style="margin-bottom:1rem">
     <h4 style="margin-top:0">Check the size and speed</h4>
     <p style="margin-bottom:.5rem">
@@ -127,6 +134,16 @@ $slowWarning = ($crossSeconds !== null && $crossSeconds > 45);
           from the back of a room. Something around
           <strong><?= (int) round($geom['h'] * 0.5) ?>&ndash;<?= (int) round($geom['h'] * 0.7) ?>px</strong>
           uses the panel properly.</li>
+<?php endif; ?>
+<?php if ($tooBigWarning): ?>
+      <li><strong>The font size is too big for this model.</strong> At
+          <?= $fontSize ?>px on a display only <?= $geom['h'] ?>px tall the text
+          is rendered at full size and clipped, so the top and bottom of every
+          letter is lost. Try about
+          <strong><?= max(4, (int) round($geom['h'] * 1.3)) ?>px</strong>, and
+          keep messages UPPERCASE &mdash; at this height lowercase descenders
+          (g, p, y) either hang off the bottom or force the letters so small
+          that nothing is readable.</li>
 <?php endif; ?>
 <?php if ($slowWarning): ?>
       <li><strong>That is slow.</strong> One message would hold the queue for
